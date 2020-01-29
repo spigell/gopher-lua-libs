@@ -1,0 +1,29 @@
+before:
+  hooks:
+    - git stash
+    - go mod download
+builds:
+- id: main
+  main: ./cmd/glua-libs/main.go
+  goos:
+  - darwin
+  - linux
+  - freebsd
+  goarch:
+  - amd64
+  - 386
+  ignore:
+  - goos: freebsd
+    goarch: 386
+  env:
+    - CGO_ENABLED=0
+archives:
+  - id: main
+    format: tar.gz
+    files:
+      - README.md
+      - LICENSE
+changelog:
+  skip: true
+checksum:
+  name_template: '{{ .ProjectName }}_{{ .Version }}_checksums.txt'

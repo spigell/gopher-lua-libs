@@ -4,10 +4,14 @@ language: go
 #  - docker
 
 go:
-  - "1.9.x"
-  - "1.10.x"
-  - "1.11.x"
-  - "1.12.x"
+# https://github.com/vadv/gopher-lua-libs/issues/13
+#  - "1.10.x"
+#  - "1.11.x"
+#  - "1.12.x"
+  - "1.13.x"
+  - "master"
+
+env: GO111MODULE=on
 
 before_install:
 # install docker compose
@@ -28,3 +32,11 @@ script:
 #  - ./tests/runner.sh wait
   - go test -v -tags 'sqlite' -race ./...
   - $HOME/gopath/bin/goveralls -service=travis-ci || echo "ok"
+deploy:
+  - provider: script
+    edge: true
+    cleanup: false
+    script: curl -sL https://git.io/goreleaser | bash
+    on:
+      tags: true
+      condition: $TRAVIS_OS_NAME = linux && $TRAVIS_GO_VERSION =~ ^1\.13
